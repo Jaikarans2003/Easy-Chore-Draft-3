@@ -1,0 +1,45 @@
+D:\Easy Chore\home-chore-app\
+├── public\
+│   ├── css\
+│   │   └── styles.css
+│   ├── js\
+│   │   ├── auth.js
+│   │   ├── home.js
+│   │   ├── chores.js
+│   │   └── expenses.js
+│   ├── index.html
+│   ├── dashboard.html
+│   ├── create-join-home.html
+│   ├── add-chore.html
+│   ├── view-chores.html
+│   ├── add-expense.html
+│   └── view-expenses.html
+├── models\
+│   ├── User.js
+│   ├── Home.js
+│   ├── Chore.js
+│   └── Expense.js
+├── routes\
+│   ├── auth.js
+│   ├── homes.js
+│   ├── chores.js
+│   └── expenses.js
+├── config\
+│   └── firebase.js
+├── .env
+└── server.js
+
+
+
+Create .env file and 
+Enter your project credentials
+PORT=
+MONGODB_URI=
+FIREBASE_API_KEY=
+FIREBASE_AUTH_DOMAIN=
+FIREBASE_PROJECT_ID=
+FIREBASE_STORAGE_BUCKET=
+FIREBASE_MESSAGING_SENDER_ID=
+FIREBASE_APP_ID=
+FIREBASE_CLIENT_EMAIL=
+FIREBASE_PRIVATE_KEY=                                                                                                                                                                                                           

@@ -1,0 +1,275 @@
+/* Mobile-specific styles and optimizations */
+
+/* Base mobile tweaks */
+:root {
+  touch-action: manipulation; /* Disable double-tap zoom on some browsers */
+  -webkit-text-size-adjust: 100%; /* Prevent font size adjustment on orientation change */
+}
+
+body {
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  overscroll-behavior: contain; /* Prevent pull-to-refresh on some browsers */
+}
+
+/* Increase touch target sizes */
+button, 
+.btn,
+.dashboard-card,
+.list-item,
+input[type="checkbox"],
+input[type="radio"],
+select {
+  min-height: 44px; /* Apple's recommended minimum touch target size */
+}
+
+/* Add active state for better touch feedback */
+button:active,
+.btn:active,
+.dashboard-card:active,
+.list-item:active {
+  opacity: 0.7;
+  transform: scale(0.98);
+}
+
+/* Fix for button click issues on mobile */
+.option-card .btn,
+button.btn {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  -webkit-touch-callout: none;
+  position: relative;
+  z-index: 5;
+  touch-action: manipulation;
+}
+
+/* Fix for nested event issues */
+.option-card {
+  position: relative;
+}
+
+.option-card button {
+  pointer-events: auto !important;
+}
+
+/* Fix event bubbling in containers */
+.option-cards, .form-container {
+  pointer-events: auto;
+}
+
+/* Optimize dashboard grid for mobile */
+@media (max-width: 600px) {
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .dashboard-card {
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .dashboard-card h3 {
+    font-size: 1rem;
+    margin: 8px 0 4px;
+  }
+
+  .dashboard-card p {
+    font-size: 0.8rem;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .dashboard-icon {
+    font-size: 1.5rem;
+  }
+  
+  /* Create/Join home specific fixes */
+  .option-cards {
+    flex-direction: column !important;
+    width: 100%;
+  }
+  
+  .option-card {
+    width: 100% !important;
+    margin-bottom: 20px;
+  }
+  
+  /* Make buttons extra large on touch devices */
+  .option-card .btn {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    min-height: 48px;
+    margin-top: 15px;
+    display: block !important;
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+}
+
+/* Mobile-specific form improvements */
+@media (max-width: 480px) {
+  /* Larger form elements for touch */
+  input, 
+  select, 
+  textarea {
+    font-size: 16px !important; /* Prevent zoom on iOS when focusing inputs */
+    padding: 12px !important;
+    margin-bottom: 16px;
+  }
+
+  /* Fix input zooming issues */
+  input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"] {
+    min-height: 40px;
+  }
+
+  /* Better spacing for checkboxes and radios */
+  input[type="checkbox"] + label,
+  input[type="radio"] + label {
+    padding: 12px 0;
+    display: inline-block;
+  }
+
+  /* Improve buttons on forms */
+  .form-actions .btn {
+    width: 100%;
+    margin: 5px 0;
+    padding: 12px;
+  }
+}
+
+/* Fixed mobile header for better navigation */
+@media (max-width: 768px) {
+  .container {
+    padding-top: 60px; /* Space for fixed header */
+  }
+
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: white;
+    padding: 10px 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Compact header for mobile */
+  .header-content {
+    width: 100%;
+  }
+
+  .header-content h1 {
+    font-size: 1.4rem;
+  }
+
+  .current-home {
+    font-size: 0.9rem;
+  }
+
+  nav {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  nav .btn {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  /* Bottom navigation for mobile */
+  .mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  .mobile-nav-item {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 0.8rem;
+  }
+
+  .mobile-nav-item i {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+  }
+
+  /* Add padding to footer when mobile nav is present */
+  footer {
+    padding-bottom: 70px;
+  }
+
+  /* Modify scrolling behavior */
+  main {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 20px;
+  }
+}
+
+/* Home chat optimizations for mobile */
+@media (max-width: 768px) {
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px);
+  }
+
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .message-input-container {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 10px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Fix modal behavior on mobile */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    margin: 10% auto;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+}
+
+/* Performance optimizations */
+@media (max-width: 768px) {
+  /* Use hardware acceleration */
+  .card, 
+  .dashboard-card,
+  .btn,
+  header,
+  .mobile-nav {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Reduce animations for better performance */
+  * {
+    transition-duration: 0.2s !important;
+  }
+} 

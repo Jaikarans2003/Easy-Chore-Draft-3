@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Create or Join Home - EASY CHORE</title>
+    <link rel="stylesheet" href="css/anti-glitch.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/mobile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Add active state for touch devices */
+        .touch-active {
+            opacity: 0.7;
+            transform: scale(0.98);
+        }
+        
+        /* Fix for mobile-specific form displays */
+        @media (max-width: 768px) {
+            .option-cards {
+                flex-direction: column;
+            }
+            
+            .option-card {
+                width: 100%;
+                margin-bottom: 15px;
+                position: relative;
+                z-index: 1; /* Ensure proper stacking */
+            }
+            
+            .form-container {
+                width: 100%;
+                padding: 0;
+            }
+            
+            .btn-back {
+                min-height: 44px; /* Better touch target */
+            }
+            
+            /* Improve form visibility on mobile */
+            #create-home-form, #join-home-form {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                z-index: 100;
+                padding: 15px;
+                min-height: 100vh;
+            }
+            
+            /* Improved button styling for mobile */
+            .btn {
+                cursor: pointer;
+                -webkit-appearance: none;
+                -webkit-tap-highlight-color: transparent;
+                min-height: 48px; /* Apple recommended touch target size */
+                position: relative;
+                z-index: 2; /* Ensure buttons are above cards */
+                padding: 12px 20px;
+                font-size: 16px;
+                touch-action: manipulation;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            /* Add active state feedback for better touch response */
+            .btn:active {
+                opacity: 0.8;
+                transform: scale(0.98);
+            }
+            
+            /* Debug outlines to ensure buttons are correctly positioned */
+            .option-card .btn {
+                margin-top: 15px;
+                width: 100%;
+                max-width: 200px;
+                outline: none;
+                position: relative;
+                z-index: 10;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Easy Chore</h1>
+        </div>
+        <nav>
+            <button id="logout-btn" class="btn secondary-btn"><i class="fas fa-sign-out-alt"></i> <span class="btn-text">Logout</span></button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="page-header">
+            <h2>Welcome to Easy Chore</h2>
+            <p>Create a new home or join an existing one to get started</p>
+        </div>
+
+        <div class="option-cards">
+            <div class="option-card" id="create-home-card">
+                <div class="option-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <h3>Create a New Home</h3>
+                <p>Start a new home and invite members</p>
+                <button class="btn primary-btn" id="create-home-button">Create Home</button>
+            </div>
+
+            <div class="option-card" id="join-home-card">
+                <div class="option-icon">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <h3>Join an Existing Home</h3>
+                <p>Join a home using a Home ID</p>
+                <button class="btn primary-btn" id="join-home-button">Join Home</button>
+            </div>
+        </div>
+
+        <!-- Create Home Form (Hidden by default) -->
+        <div class="form-container" id="create-home-form" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Create a New Home</h3>
+                    <button type="button" class="btn-back"><i class="fas fa-arrow-left"></i> Back</button>
+                </div>
+                <form id="create-home">
+                    <div class="form-group">
+                        <label for="home-name">Home Name</label>
+                        <input type="text" id="home-name" placeholder="e.g. My Apartment" required>
+                    </div>
+                    
+                    <div id="members-container">
+                        <h4>Add Members (Optional)</h4>
+                        <p class="help-text">Add people who will be sharing this home with you</p>
+                        
+                        <div class="member-inputs">
+                            <div class="form-group">
+                                <label for="member-name-1">Name</label>
+                                <input type="text" id="member-name-1" placeholder="Member's name">
+                            </div>
+                            <div class="form-group">
+                                <label for="member-email-1">Email</label>
+                                <input type="email" id="member-email-1" placeholder="Member's email">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="add-member-btn" class="btn secondary-btn">
+                        <i class="fas fa-plus"></i> Add Another Member
+                    </button>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn primary-btn">Create Home</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Join Home Form (Hidden by default) -->
+        <div class="form-container" id="join-home-form" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Join an Existing Home</h3>
+                    <button type="button" class="btn-back"><i class="fas fa-arrow-left"></i> Back</button>
+                </div>
+                <form id="join-home">
+                    <div class="form-group">
+                        <label for="home-id">Home ID</label>
+                        <input type="text" id="home-id" placeholder="Enter the Home ID" required>
+                        <p class="help-text">Ask the home creator for the Home ID</p>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn primary-btn">Join Home</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Easy Chore. All rights reserved.</p>
+    </footer>
+
+    <!-- Debug helper to show clicks -->
+    <div id="debug-touch" style="position: fixed; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px; font-size: 12px; display: none; z-index: 9999;"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <!-- Mobile optimizations -->
+    <script src="js/mobile-optimizations.js"></script>
+    <script src="js/mobile-nav.js"></script>
+    <script src="js/form-mobile-enhancements.js"></script>
+    
+    <!-- Add a debugging script for touch events -->
+    <script>
+        // Debug script to identify touch issues
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show touch/click coordinates for debugging
+            const debugTouch = document.getElementById('debug-touch');
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                debugTouch.style.display = 'block';
+                
+                ['touchstart', 'click'].forEach(eventType => {
+                    document.addEventListener(eventType, function(e) {
+                        const target = e.target.tagName + (e.target.className ? ' .' + e.target.className.split(' ')[0] : '');
+                        debugTouch.textContent = `${eventType} on ${target}`;
+                        setTimeout(() => { debugTouch.textContent = ''; }, 2000);
+                    });
+                });
+            }
+            
+            // Reference the buttons directly by ID
+            const createHomeButton = document.getElementById('create-home-button');
+            const joinHomeButton = document.getElementById('join-home-button');
+            const createHomeForm = document.getElementById('create-home-form');
+            const joinHomeForm = document.getElementById('join-home-form');
+            const optionCards = document.querySelector('.option-cards');
+            
+            // Direct button handling
+            if (createHomeButton) {
+                ['touchstart', 'click'].forEach(eventType => {
+                    createHomeButton.addEventListener(eventType, function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('Create button ' + eventType);
+                        optionCards.style.display = 'none';
+                        createHomeForm.style.display = 'block';
+                    }, { passive: false });
+                });
+            }
+            
+            if (joinHomeButton) {
+                ['touchstart', 'click'].forEach(eventType => {
+                    joinHomeButton.addEventListener(eventType, function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('Join button ' + eventType);
+                        optionCards.style.display = 'none';
+                        joinHomeForm.style.display = 'block';
+                    }, { passive: false });
+                });
+            }
+        });
+    </script>
+    
+    <!-- Home functionality comes last -->
+    <script src="js/home.js"></script>
+</body>
+</html>
