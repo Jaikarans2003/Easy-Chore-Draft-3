@@ -18,7 +18,6 @@
     <link rel="stylesheet" href="css/anti-glitch.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/mobile.css">
-    <link rel="stylesheet" href="css/mobile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* Critical CSS inline for faster rendering */
@@ -72,10 +71,29 @@
             opacity: 0.7;
             transform: scale(0.98);
         }
-            /* Add active state for touch devices */
-        .touch-active {
-            opacity: 0.7;
-            transform: scale(0.98);
+        /* Logo in header styling */
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .brand-logo {
+            max-width: 40px;
+            height: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+            }
+            
+            .brand-container {
+                gap: 10px;
+            }
         }
     </style>
 </head>
@@ -88,13 +106,21 @@
     <div class="container">
         <header>
             <div class="header-content">
-                <h1>EASY CHORE</h1>
-                <div class="current-home">
-                    Current Home: <span id="current-home-name">Loading...</span>
-                    <span id="home-id" class="home-id"></span>
+                <div class="brand-container">
+                    <img src="Brand Logos/Easy Chore.png" alt="Easy Chore Logo" class="brand-logo">
+                    <div>
+                        <h1>Easy Chore</h1>
+                        <div class="current-home">
+                            Current Home: <span id="current-home-name">Loading...</span>
+                            <span id="home-id" class="home-id"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <nav>
+                <a href="select-home.html" class="btn secondary-btn">
+                    <i class="fas fa-exchange-alt"></i> Switch Home
+                </a>
                 <button id="logout-btn" class="btn secondary-btn">
                     <i class="fas fa-sign-out-alt"></i> <span class="btn-text">Logout</span>
                 </button>
@@ -105,6 +131,21 @@
             <div class="welcome-section">
                 <h2>Welcome, <span id="user-name">User</span>!</h2>
                 <p>Manage your home chores and expenses</p>
+            </div>
+
+            <div class="dashboard-stats">
+                <div class="stat-card chores">
+                    <div class="stat-number" id="chores-count">-</div>
+                    <div class="stat-label">Active Chores</div>
+                </div>
+                <div class="stat-card expenses">
+                    <div class="stat-number" id="expenses-count">-</div>
+                    <div class="stat-label">Expenses</div>
+                </div>
+                <div class="stat-card payments">
+                    <div class="stat-number" id="members-count">-</div>
+                    <div class="stat-label">Members</div>
+                </div>
             </div>
 
             <div class="dashboard-grid">
@@ -157,6 +198,7 @@
 
         <footer>
             <p>&copy; 2025 Easy Chore. All rights reserved.</p>
+            <p class="motto" style="font-size: 0.9rem; margin-top: 5px;">Your home, your rules, your app.</p>
         </footer>
     </div>
     
