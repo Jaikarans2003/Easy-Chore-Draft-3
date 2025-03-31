@@ -7,6 +7,52 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/mobile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .payment-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .pay-now-btn {
+            background-color: #4CBB17;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+        .paid-cash-btn {
+            background-color: #4A6FA5;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+        .payment-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .paid {
+            background-color: rgba(76, 187, 23, 0.1);
+            color: #4CBB17;
+        }
+        .unpaid {
+            background-color: rgba(255, 107, 107, 0.1);
+            color: #FF6B6B;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -34,6 +80,9 @@
             <div class="card">
                 <div class="card-header">
                     <h2>Expense History</h2>
+                    <button id="profile-btn" class="btn secondary-btn">
+                        <i class="fas fa-user-circle"></i> My Payment Profile
+                    </button>
                 </div>
                 <div class="list-container">
                     <ul id="expenses-list" class="list">
@@ -46,6 +95,22 @@
         <footer>
             <p>&copy; 2025 Easy Chore. All rights reserved.</p>
         </footer>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>My Payment Profile</h2>
+            <form id="payment-profile-form">
+                <div class="form-group">
+                    <label for="upi-id">UPI ID</label>
+                    <input type="text" id="upi-id" placeholder="yourname@upi">
+                    <p class="help-text">This will be used for receiving payments from other members</p>
+                </div>
+                <button type="submit" class="btn primary-btn">Save</button>
+            </form>
+        </div>
     </div>
 
     <!-- Firebase SDK -->

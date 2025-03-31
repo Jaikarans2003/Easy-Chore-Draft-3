@@ -4,6 +4,7 @@ const { admin } = require('../config/firebase');
 const Expense = require('../models/Expense');
 const Home = require('../models/Home');
 const { verifyToken } = require('./auth');
+const User = require('../models/User');
 
 // Mock data for development
 const mockExpenses = [
@@ -91,11 +92,8 @@ router.post('/', verifyToken, async (req, res) => {
     console.log('Adding new expense:', req.body);
     
     // Validate required fields
-    if (!homeId || !payer || !amount) {
-      return res.status(400).json({ 
-        message: 'Missing required fields', 
-        required: ['homeId', 'payer', 'amount']
-      });
+    if (!homeId || !payer || !amount || !reason || !debtors || !Array.isArray(debtors)) {
+      return res.status(400).json({ message: 'Missing required fields' });
     }
     
     // Validate amount is a number
@@ -125,6 +123,12 @@ router.post('/', verifyToken, async (req, res) => {
     const home = await Home.findOne({ homeId });
     if (!home) {
       return res.status(404).json({ message: 'Home not found' });
+    }
+    
+    // Check if user is a member of the home
+    const isMember = home.members.some(member => member.uid === req.user.uid);
+    if (!isMember) {
+      return res.status(403).json({ message: 'User is not a member of this home' });
     }
     
     // Create debtors array if not provided or ensure it's valid
@@ -161,7 +165,8 @@ router.post('/', verifyToken, async (req, res) => {
       reason: reason || '',
       splitType: splitType || 'equal',
       debtors: validDebtors,
-      date: new Date()
+      date: new Date(),
+      createdBy: req.user.uid
     });
     
     await newExpense.save();
@@ -190,6 +195,17 @@ router.get('/:id', verifyToken, async (req, res) => {
     
     if (!expense) {
       return res.status(404).json({ message: 'Expense not found' });
+    }
+    
+    // Check if user is a member of the home
+    const home = await Home.findById(expense.homeId);
+    if (!home) {
+      return res.status(404).json({ message: 'Home not found' });
+    }
+    
+    const isMember = home.members.some(member => member.uid === req.user.uid);
+    if (!isMember) {
+      return res.status(403).json({ message: 'User is not authorized to view this expense' });
     }
     
     res.status(200).json({ expense });
@@ -287,6 +303,113 @@ router.delete('/:id', verifyToken, async (req, res) => {
   } catch (error) {
     console.error('Delete expense error:', error);
     res.status(500).json({ message: 'Server error', details: error.message });
+  }
+});
+
+// Mark a debt as paid by the payer (cash payment)
+router.patch('/:expenseId/mark-paid', verifyToken, async (req, res) => {
+  try {
+    const { expenseId } = req.params;
+    const { debtorName, paidMethod } = req.body;
+    
+    if (!debtorName) {
+      return res.status(400).json({ message: 'Debtor name is required' });
+    }
+    
+    const expense = await Expense.findById(expenseId);
+    if (!expense) {
+      return res.status(404).json({ message: 'Expense not found' });
+    }
+    
+    // Check if user is the payer of the expense
+    const home = await Home.findById(expense.homeId);
+    if (!home) {
+      return res.status(404).json({ message: 'Home not found' });
+    }
+    
+    const currentMember = home.members.find(member => member.uid === req.user.uid);
+    if (!currentMember) {
+      return res.status(403).json({ message: 'User is not a member of this home' });
+    }
+    
+    if (currentMember.name !== expense.payer) {
+      return res.status(403).json({ message: 'Only the payer can mark debts as paid' });
+    }
+    
+    // Find the debtor in the expense
+    const debtorIndex = expense.debtors.findIndex(d => d.name === debtorName);
+    if (debtorIndex === -1) {
+      return res.status(404).json({ message: 'Debtor not found in this expense' });
+    }
+    
+    // Mark as paid
+    expense.debtors[debtorIndex].paid = true;
+    expense.debtors[debtorIndex].paidMethod = paidMethod || 'cash';
+    expense.debtors[debtorIndex].paidDate = new Date();
+    
+    await expense.save();
+    
+    return res.json({ 
+      message: 'Payment marked as paid',
+      expense
+    });
+  } catch (error) {
+    console.error('Error marking payment as paid:', error);
+    return res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+// Mark own debt as paid (UPI payment)
+router.patch('/:expenseId/mark-paid-self', verifyToken, async (req, res) => {
+  try {
+    const { expenseId } = req.params;
+    const { debtorName, paidMethod } = req.body;
+    
+    if (!debtorName) {
+      return res.status(400).json({ message: 'Debtor name is required' });
+    }
+    
+    const expense = await Expense.findById(expenseId);
+    if (!expense) {
+      return res.status(404).json({ message: 'Expense not found' });
+    }
+    
+    // Check if user is a member of the home
+    const home = await Home.findById(expense.homeId);
+    if (!home) {
+      return res.status(404).json({ message: 'Home not found' });
+    }
+    
+    const currentMember = home.members.find(member => member.uid === req.user.uid);
+    if (!currentMember) {
+      return res.status(403).json({ message: 'User is not a member of this home' });
+    }
+    
+    // Ensure the user is marking their own debt as paid
+    if (currentMember.name !== debtorName) {
+      return res.status(403).json({ message: 'You can only mark your own debts as paid' });
+    }
+    
+    // Find the debtor in the expense
+    const debtorIndex = expense.debtors.findIndex(d => d.name === debtorName);
+    if (debtorIndex === -1) {
+      return res.status(404).json({ message: 'Debtor not found in this expense' });
+    }
+    
+    // Mark as paid
+    expense.debtors[debtorIndex].paid = true;
+    expense.debtors[debtorIndex].paidMethod = paidMethod || 'upi';
+    expense.debtors[debtorIndex].paidDate = new Date();
+    
+    await expense.save();
+    
+    return res.json({ 
+      message: 'Your payment has been marked as paid',
+      expense
+    });
+  } catch (error) {
+    console.error('Error marking self payment as paid:', error);
+    return res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 

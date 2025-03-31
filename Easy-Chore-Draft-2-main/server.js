@@ -103,6 +103,7 @@ const startServer = () => {
   const expensesRouter = require('./routes/expenses');
   const uploadsRouter = require('./routes/uploads');
   const messagesRouter = require('./routes/messages');
+  const usersRouter = require('./routes/users');
   
   // Routes
   app.use('/api/auth', authRouter);
@@ -111,6 +112,7 @@ const startServer = () => {
   app.use('/api/expenses', expensesRouter);
   app.use('/api/uploads', uploadsRouter);
   app.use('/api/messages', messagesRouter);
+  app.use('/api/users', usersRouter);
 
   // Serve HTML files
   app.get('/', (req, res) => {
