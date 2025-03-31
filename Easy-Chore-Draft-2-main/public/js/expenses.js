@@ -28,51 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Setup profile modal for UPI ID management
 function setupProfileModal() {
-    const profileBtn = document.getElementById('profile-btn');
-    const profileModal = document.getElementById('profile-modal');
-    const closeBtn = profileModal.querySelector('.close');
-    const profileForm = document.getElementById('payment-profile-form');
-    
-    // Load saved UPI ID
-    const savedUpiId = localStorage.getItem('upiId');
-    if (savedUpiId) {
-        document.getElementById('upi-id').value = savedUpiId;
-    }
-    
-    // Show modal on button click
-    profileBtn.addEventListener('click', function() {
-        profileModal.style.display = 'block';
-    });
-    
-    // Close modal on X click
-    closeBtn.addEventListener('click', function() {
-        profileModal.style.display = 'none';
-    });
-    
-    // Close when clicking outside
-    window.addEventListener('click', function(event) {
-        if (event.target === profileModal) {
-            profileModal.style.display = 'none';
-        }
-    });
-    
-    // Handle form submission
-    profileForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const upiId = document.getElementById('upi-id').value.trim();
-        
-        // Save UPI ID to localStorage and user profile
-        localStorage.setItem('upiId', upiId);
-        
-        // Update in database
-        saveUpiId(upiId);
-        
-        // Close modal
-        profileModal.style.display = 'none';
-        
-        // Show success message
-        showAlert('UPI ID saved successfully', 'success');
-    });
+    // This function is no longer needed since we now have a separate profile page
 }
 
 // Save UPI ID to user profile in database
@@ -563,23 +519,26 @@ function showExpenseDetails(expense) {
 // Handle UPI payment
 function handleUpiPayment(expenseId, amount, payee, upiId) {
     if (!upiId) {
-        showAlert(`${payee} hasn't set up their UPI ID yet. Please ask them to update their profile.`, 'error');
+        showAlert(`${payee} hasn't set up their UPI ID yet. Please ask them to update their profile`, 'error');
         return;
     }
     
     // Create UPI URL with parameters
     const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payee)}&am=${amount}&cu=INR&tn=${encodeURIComponent('EasyChore Payment')}`;
     
-    // Open UPI URL
-    window.location.href = upiUrl;
-    
-    // Show a message about confirming payment
-    setTimeout(() => {
-        if (confirm('Have you completed the payment? If yes, this payment will be marked as paid.')) {
-            // Mark the payment as paid
-            markAsPaidBySelf(expenseId);
-        }
-    }, 1000);
+    // Show confirmation before opening UPI app
+    if (confirm(`You are about to pay ₹${amount} to ${payee} (${upiId}). Continue to payment?`)) {
+        // Open UPI URL
+        window.location.href = upiUrl;
+        
+        // Show a message about confirming payment after a delay
+        setTimeout(() => {
+            if (confirm('Did you complete the payment? If yes, this payment will be marked as paid.')) {
+                // Mark the payment as paid
+                markAsPaidBySelf(expenseId);
+            }
+        }, 3000); // Give extra time to complete payment
+    }
 }
 
 // Mark a payment as paid by the payer (for cash payments)
