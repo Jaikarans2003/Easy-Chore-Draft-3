@@ -85,106 +85,110 @@
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <h1>Easy Chore</h1>
-        </div>
-        <nav>
-            <button id="logout-btn" class="btn secondary-btn"><i class="fas fa-sign-out-alt"></i> <span class="btn-text">Logout</span></button>
-        </nav>
-    </header>
+    <div class="page-wrapper">
+        <header>
+            <div class="logo">
+                <img src="Brand Logos/Easy Chore.png" alt="Easy Chore Logo" class="brand-logo">
+                <h1>Easy Chore</h1>
+            </div>
+            <nav>
+                <button id="logout-btn" class="btn secondary-btn"><i class="fas fa-sign-out-alt"></i> <span class="btn-text">Logout</span></button>
+            </nav>
+        </header>
 
-    <main class="container">
-        <div class="page-header">
-            <h2>Welcome to Easy Chore</h2>
-            <p>Create a new home or join an existing one to get started</p>
-        </div>
-
-        <div class="option-cards">
-            <div class="option-card" id="create-home-card">
-                <div class="option-icon">
-                    <i class="fas fa-plus-circle"></i>
-                </div>
-                <h3>Create a New Home</h3>
-                <p>Start a new home and invite members</p>
-                <button class="btn primary-btn" id="create-home-button">Create Home</button>
+        <main class="container">
+            <div class="page-header">
+                <h2>Welcome to Easy Chore</h2>
+                <p>Create a new home or join an existing one to get started</p>
             </div>
 
-            <div class="option-card" id="join-home-card">
-                <div class="option-icon">
-                    <i class="fas fa-sign-in-alt"></i>
-                </div>
-                <h3>Join an Existing Home</h3>
-                <p>Join a home using a Home ID</p>
-                <button class="btn primary-btn" id="join-home-button">Join Home</button>
-            </div>
-        </div>
-
-        <!-- Create Home Form (Hidden by default) -->
-        <div class="form-container" id="create-home-form" style="display: none;">
-            <div class="card">
-                <div class="card-header">
-                    <h3>Create a New Home</h3>
-                    <button type="button" class="btn-back"><i class="fas fa-arrow-left"></i> Back</button>
-                </div>
-                <form id="create-home">
-                    <div class="form-group">
-                        <label for="home-name">Home Name</label>
-                        <input type="text" id="home-name" placeholder="e.g. My Apartment" required>
+            <div class="option-cards">
+                <div class="option-card" id="create-home-card">
+                    <div class="option-icon">
+                        <i class="fas fa-plus-circle"></i>
                     </div>
-                    
-                    <div id="members-container">
-                        <h4>Add Members (Optional)</h4>
-                        <p class="help-text">Add people who will be sharing this home with you</p>
+                    <h3>Create a New Home</h3>
+                    <p>Start a new home and invite members</p>
+                    <button class="btn primary-btn" id="create-home-button">Create Home</button>
+                </div>
+
+                <div class="option-card" id="join-home-card">
+                    <div class="option-icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <h3>Join an Existing Home</h3>
+                    <p>Join a home using a Home ID</p>
+                    <button class="btn primary-btn" id="join-home-button">Join Home</button>
+                </div>
+            </div>
+
+            <!-- Create Home Form (Hidden by default) -->
+            <div class="form-container" id="create-home-form" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Create a New Home</h3>
+                        <button type="button" class="btn-back"><i class="fas fa-arrow-left"></i> Back</button>
+                    </div>
+                    <form id="create-home">
+                        <div class="form-group">
+                            <label for="home-name">Home Name</label>
+                            <input type="text" id="home-name" placeholder="e.g. My Apartment" required>
+                        </div>
                         
-                        <div class="member-inputs">
-                            <div class="form-group">
-                                <label for="member-name-1">Name</label>
-                                <input type="text" id="member-name-1" placeholder="Member's name">
-                            </div>
-                            <div class="form-group">
-                                <label for="member-email-1">Email</label>
-                                <input type="email" id="member-email-1" placeholder="Member's email">
+                        <div id="members-container">
+                            <h4>Add Members (Optional)</h4>
+                            <p class="help-text">Add people who will be sharing this home with you</p>
+                            
+                            <div class="member-inputs">
+                                <div class="form-group">
+                                    <label for="member-name-1">Name</label>
+                                    <input type="text" id="member-name-1" placeholder="Member's name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="member-email-1">Email</label>
+                                    <input type="email" id="member-email-1" placeholder="Member's email">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <button type="button" id="add-member-btn" class="btn secondary-btn">
-                        <i class="fas fa-plus"></i> Add Another Member
-                    </button>
-                    
-                    <div class="form-actions">
-                        <button type="submit" class="btn primary-btn">Create Home</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Join Home Form (Hidden by default) -->
-        <div class="form-container" id="join-home-form" style="display: none;">
-            <div class="card">
-                <div class="card-header">
-                    <h3>Join an Existing Home</h3>
-                    <button type="button" class="btn-back"><i class="fas fa-arrow-left"></i> Back</button>
+                        
+                        <button type="button" id="add-member-btn" class="btn secondary-btn">
+                            <i class="fas fa-plus"></i> Add Another Member
+                        </button>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn primary-btn">Create Home</button>
+                        </div>
+                    </form>
                 </div>
-                <form id="join-home">
-                    <div class="form-group">
-                        <label for="home-id">Home ID</label>
-                        <input type="text" id="home-id" placeholder="Enter the Home ID" required>
-                        <p class="help-text">Ask the home creator for the Home ID</p>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="submit" class="btn primary-btn">Join Home</button>
-                    </div>
-                </form>
             </div>
-        </div>
-    </main>
 
-    <footer>
-        <p>&copy; 2025 Easy Chore. All rights reserved.</p>
-    </footer>
+            <!-- Join Home Form (Hidden by default) -->
+            <div class="form-container" id="join-home-form" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Join an Existing Home</h3>
+                        <button type="button" class="btn-back"><i class="fas fa-arrow-left"></i> Back</button>
+                    </div>
+                    <form id="join-home">
+                        <div class="form-group">
+                            <label for="home-id">Home ID</label>
+                            <input type="text" id="home-id" placeholder="Enter the Home ID" required>
+                            <p class="help-text">Ask the home creator for the Home ID</p>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn primary-btn">Join Home</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Easy Chore. All rights reserved.</p>
+            <p class="motto" style="font-size: 0.8rem; margin-top: 5px;">Your home, your rules, your app.</p>
+        </footer>
+    </div>
 
     <!-- Debug helper to show clicks -->
     <div id="debug-touch" style="position: fixed; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px; font-size: 12px; display: none; z-index: 9999;"></div>
@@ -226,29 +230,63 @@
             const createHomeForm = document.getElementById('create-home-form');
             const joinHomeForm = document.getElementById('join-home-form');
             const optionCards = document.querySelector('.option-cards');
+            const backButtons = document.querySelectorAll('.btn-back');
             
             // Direct button handling
             if (createHomeButton) {
-                ['touchstart', 'click'].forEach(eventType => {
-                    createHomeButton.addEventListener(eventType, function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('Create button ' + eventType);
-                        optionCards.style.display = 'none';
-                        createHomeForm.style.display = 'block';
-                    }, { passive: false });
+                createHomeButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    optionCards.style.display = 'none';
+                    createHomeForm.style.display = 'block';
                 });
             }
             
             if (joinHomeButton) {
-                ['touchstart', 'click'].forEach(eventType => {
-                    joinHomeButton.addEventListener(eventType, function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('Join button ' + eventType);
-                        optionCards.style.display = 'none';
-                        joinHomeForm.style.display = 'block';
-                    }, { passive: false });
+                joinHomeButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    optionCards.style.display = 'none';
+                    joinHomeForm.style.display = 'block';
+                });
+            }
+            
+            // Back button handling
+            backButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    createHomeForm.style.display = 'none';
+                    joinHomeForm.style.display = 'none';
+                    optionCards.style.display = 'flex';
+                });
+            });
+            
+            // Add member button
+            const addMemberBtn = document.getElementById('add-member-btn');
+            let memberCount = 1;
+
+            if (addMemberBtn) {
+                addMemberBtn.addEventListener('click', function() {
+                    memberCount++;
+                    
+                    const memberInputs = document.createElement('div');
+                    memberInputs.className = 'member-inputs';
+                    memberInputs.innerHTML = `
+                        <div class="form-group">
+                            <label for="member-name-${memberCount}">Name</label>
+                            <input type="text" id="member-name-${memberCount}" placeholder="Member's name">
+                        </div>
+                        <div class="form-group">
+                            <label for="member-email-${memberCount}">Email</label>
+                            <input type="email" id="member-email-${memberCount}" placeholder="Member's email">
+                        </div>
+                        <button type="button" class="remove-member-btn"><i class="fas fa-times"></i></button>
+                    `;
+                    
+                    document.getElementById('members-container').appendChild(memberInputs);
+                    
+                    // Add event listeners to remove button
+                    const removeBtn = memberInputs.querySelector('.remove-member-btn');
+                    removeBtn.addEventListener('click', function() {
+                        memberInputs.remove();
+                    });
                 });
             }
         });
