@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 const ExpenseSchema = new mongoose.Schema({
     homeId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Home',
+        type: String,
         required: true
     },
     payer: {

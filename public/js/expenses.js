@@ -342,39 +342,22 @@ function loadExpenses() {
     // Get current user token
     firebase.auth().currentUser.getIdToken()
         .then(token => {
-            // Fetch expenses and home members
-            return Promise.all([
-                fetch(`/api/expenses/home/${homeId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    }
-                }),
-                fetch(`/api/homes/${homeId}/members`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    }
-                })
-            ]);
+            // Fetch expenses
+            return fetch(`/api/expenses/home/${homeId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
         })
-        .then(([expensesResponse, membersResponse]) => {
-            if (!expensesResponse.ok) {
+        .then(response => {
+            if (!response.ok) {
                 throw new Error('Failed to load expenses');
             }
-            if (!membersResponse.ok) {
-                throw new Error('Failed to load home members');
-            }
-            return Promise.all([expensesResponse.json(), membersResponse.json()]);
+            return response.json();
         })
-        .then(([expensesData, membersData]) => {
-            // Cache members data for later use
-            if (membersData.members) {
-                HomeDataCache.storeMembers(membersData.members);
-            }
-            
+        .then(expensesData => {
             // Clear loading
             expensesList.innerHTML = '';
             
@@ -390,12 +373,13 @@ function loadExpenses() {
                 new Date(b.date) - new Date(a.date)
             );
             
-            // Use the displayExpenses function instead of the inline code
+            // Use the displayExpenses function
             displayExpenses(sortedExpenses);
         })
         .catch(error => {
             console.error('Error loading expenses:', error);
             expensesList.innerHTML = '<li class="list-item error">Failed to load expenses. Please try again.</li>';
+            showAlert('Failed to load expenses: ' + error.message, 'error');
         });
 }
 
