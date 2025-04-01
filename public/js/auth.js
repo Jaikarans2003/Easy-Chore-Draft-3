@@ -10,18 +10,17 @@ function waitForFirebase(callback, maxAttempts = 20) {
         attempts++;
         console.log(`Checking Firebase (attempt ${attempts}/${maxAttempts})...`);
         
-        // Check both for firebase.apps and the global flag
-        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0 && window.firebaseReady) {
+        // Check if Firebase is loaded and initialized
+        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
             console.log('Firebase is ready!');
-            setTimeout(callback, 100); // Small delay to ensure auth is ready
+            setTimeout(callback, 100);
             return;
         }
         
         if (attempts < maxAttempts) {
-            setTimeout(checkFirebase, 200); // Increased timeout between attempts
+            setTimeout(checkFirebase, 200);
         } else {
             console.error('Firebase initialization timeout after multiple attempts');
-            
             // Try to initialize again as a fallback
             try {
                 if (typeof firebase !== 'undefined' && (!firebase.apps || !firebase.apps.length)) {
@@ -29,31 +28,16 @@ function waitForFirebase(callback, maxAttempts = 20) {
                         apiKey: "AIzaSyDJme3UanLUE3H2D3QY7xXaG_Xlbii1JL8",
                         authDomain: "easy-chore-project.firebaseapp.com",
                         projectId: "easy-chore-project",
-                        storageBucket: "easy-chore-project.firebasestorage.app",
+                        storageBucket: "easy-chore-project.appspot.com",
                         messagingSenderId: "444941357579",
                         appId: "1:444941357579:web:1867f23936ded8700b2d0e"
                     };
                     firebase.initializeApp(firebaseConfig);
-                    console.log("Firebase initialized as fallback");
-                    setTimeout(callback, 500);
-                    return;
+                    console.log('Firebase initialized in fallback mode');
+                    setTimeout(callback, 100);
                 }
             } catch (error) {
-                console.error("Fallback initialization failed:", error);
-            }
-            
-            showAlert('Failed to initialize authentication. Please refresh the page.', 'error');
-            
-            // Show the landing page content despite errors
-            const landingPage = document.querySelector('.landing-page');
-            if (landingPage) {
-                landingPage.classList.add('ready');
-            }
-            
-            // Hide loading state
-            const loadingState = document.getElementById('loading-state');
-            if (loadingState) {
-                loadingState.classList.add('hidden');
+                console.error('Failed to initialize Firebase:', error);
             }
         }
     };
