@@ -7,7 +7,7 @@ const Home = require('../models/Home');
 // Get current user profile
 router.get('/profile', auth, async (req, res) => {
     try {
-        const user = await User.findById(req.user.uid).select('-password');
+        const user = await User.findOne({ uid: req.user.uid }).select('-password');
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -25,7 +25,7 @@ router.patch('/profile', auth, async (req, res) => {
         const { name, email, phone, upiId } = req.body;
         
         // Find user and update
-        const user = await User.findById(req.user.uid);
+        const user = await User.findOne({ uid: req.user.uid });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }

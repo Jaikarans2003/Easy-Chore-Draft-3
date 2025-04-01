@@ -31,8 +31,18 @@ async function loadUserProfile() {
     try {
         // Display authenticated user info while loading
         const user = firebase.auth().currentUser;
-        document.getElementById('profile-name').textContent = user.displayName || 'User';
-        document.getElementById('profile-email').textContent = user.email || '';
+        const profileNameElement = document.getElementById('profile-name');
+        const profileEmailElement = document.getElementById('profile-email');
+        
+        if (profileNameElement) {
+            profileNameElement.textContent = user.displayName || 'User';
+        }
+        if (profileEmailElement) {
+            profileEmailElement.textContent = user.email || '';
+        }
+        
+        // Show loading state
+        showAlert('Loading profile information...', 'info');
         
         // Fetch user profile from our backend
         const token = await user.getIdToken();
@@ -45,36 +55,54 @@ async function loadUserProfile() {
         });
         
         if (!response.ok) {
-            throw new Error('Failed to load profile');
+            const data = await response.json();
+            throw new Error(data.message || 'Failed to load profile');
         }
         
         const data = await response.json();
         
         // Update profile form with user data
         if (data.user) {
-            document.getElementById('name').value = data.user.name || user.displayName || '';
-            document.getElementById('phone').value = data.user.phone || '';
-            document.getElementById('upi-id').value = data.user.upiId || '';
+            const nameInput = document.getElementById('name');
+            const phoneInput = document.getElementById('phone');
+            const upiInput = document.getElementById('upi-id');
+            
+            if (nameInput) {
+                nameInput.value = data.user.name || user.displayName || '';
+            }
+            if (phoneInput) {
+                phoneInput.value = data.user.phone || '';
+            }
+            if (upiInput) {
+                upiInput.value = data.user.upiId || '';
+            }
             
             // Update displayed profile info
-            document.getElementById('profile-name').textContent = data.user.name || user.displayName || 'User';
+            if (profileNameElement) {
+                profileNameElement.textContent = data.user.name || user.displayName || 'User';
+            }
+            
+            // Clear loading message
+            showAlert('Profile loaded successfully', 'success');
         }
         
         // Also load home info to show current home
         loadHomeInfo();
     } catch (error) {
         console.error('Error loading profile:', error);
-        showAlert('Failed to load profile information', 'error');
+        showAlert('Failed to load profile information: ' + error.message, 'error');
     }
 }
 
 // Load home information
 function loadHomeInfo() {
     const homeId = localStorage.getItem('currentHomeId');
+    const currentHomeElement = document.getElementById('current-home-name');
     
     if (!homeId) {
-        // No home selected, redirect to create/join page
-        window.location.href = '/create-join-home.html';
+        if (currentHomeElement) {
+            currentHomeElement.textContent = 'No home selected';
+        }
         return;
     }
     
@@ -92,21 +120,25 @@ function loadHomeInfo() {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Failed to load home information');
+                return response.json().then(err => {
+                    throw new Error(err.message || 'Failed to load home information');
+                });
             }
             return response.json();
         })
         .then(data => {
-            if (data.home) {
-                // Display the home name
-                document.getElementById('current-home-name').textContent = data.home.name;
+            if (data.home && currentHomeElement) {
+                currentHomeElement.textContent = data.home.name;
             } else {
                 throw new Error('Invalid home data received');
             }
         })
         .catch(error => {
             console.error('Error loading home info:', error);
-            document.getElementById('current-home-name').textContent = 'Error loading home';
+            if (currentHomeElement) {
+                currentHomeElement.textContent = 'Error loading home';
+            }
+            showAlert('Failed to load home information: ' + error.message, 'error');
         });
 }
 
@@ -153,8 +185,13 @@ async function handleProfileUpdate(e) {
             throw new Error(data.message || 'Failed to update profile');
         }
         
+        const data = await response.json();
+        
         // Update displayed profile info
-        document.getElementById('profile-name').textContent = name;
+        const profileNameElement = document.getElementById('profile-name');
+        if (profileNameElement) {
+            profileNameElement.textContent = name;
+        }
         
         // Show success message
         showAlert('Profile updated successfully', 'success');
@@ -181,9 +218,6 @@ async function handlePaymentInfoUpdate(e) {
     submitBtn.disabled = true;
     
     try {
-        // Save UPI ID to local storage for quick access
-        localStorage.setItem('upiId', upiId);
-        
         // Update UPI ID in our backend
         const token = await firebase.auth().currentUser.getIdToken();
         const response = await fetch('/api/users/profile', {
@@ -201,6 +235,11 @@ async function handlePaymentInfoUpdate(e) {
             const data = await response.json();
             throw new Error(data.message || 'Failed to update payment information');
         }
+        
+        const data = await response.json();
+        
+        // Save UPI ID to local storage for quick access
+        localStorage.setItem('upiId', upiId);
         
         // Show success message
         showAlert('Payment information updated successfully', 'success');
@@ -227,10 +266,12 @@ function showAlert(message, type) {
     
     // Add alert to the page
     const container = document.querySelector('.container');
-    container.insertBefore(alertDiv, container.firstChild);
-    
-    // Remove alert after 3 seconds
-    setTimeout(() => {
-        alertDiv.remove();
-    }, 3000);
+    if (container) {
+        container.insertBefore(alertDiv, container.firstChild);
+        
+        // Remove alert after 3 seconds
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 3000);
+    }
 } 
