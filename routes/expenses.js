@@ -191,14 +191,14 @@ router.get('/:id', verifyToken, async (req, res) => {
       return res.status(200).json({ expense: mockExpenses[0] });
     }
     
-    const expense = await Expense.findById(expenseId);
+    const expense = await Expense.findOne({ _id: expenseId });
     
     if (!expense) {
       return res.status(404).json({ message: 'Expense not found' });
     }
     
     // Check if user is a member of the home
-    const home = await Home.findById(expense.homeId);
+    const home = await Home.findOne({ homeId: expense.homeId });
     if (!home) {
       return res.status(404).json({ message: 'Home not found' });
     }

@@ -55,16 +55,12 @@
             transform: translateZ(0);
             will-change: transform;
             transition: transform 0.2s ease;
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
         }
         .dashboard-card:hover {
             transform: translateY(-2px);
-        }
-        /* Optimize member list rendering */
-        #members-list {
-            contain: content;
-        }
-        .list-item {
-            contain: layout style;
         }
         /* Add active state for touch devices */
         .touch-active {
@@ -83,6 +79,33 @@
             height: auto;
         }
         
+        .dashboard-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px 0;
+        }
+        
+        .welcome-section {
+            text-align: center;
+            margin: 40px 0;
+            padding: 20px;
+            background: var(--card-background);
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .welcome-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .welcome-section p {
+            color: var(--text-color);
+            font-size: 1.1em;
+        }
+        
         @media (max-width: 768px) {
             .header-content {
                 display: flex;
@@ -93,6 +116,139 @@
             
             .brand-container {
                 gap: 10px;
+            }
+            
+            .dashboard-card {
+                min-width: calc(50% - 20px);
+                margin: 10px 0;
+            }
+            
+            .welcome-section {
+                margin: 20px 0;
+                padding: 15px;
+            }
+        }
+
+        .members-section {
+            margin-top: 30px;
+            padding: 0 20px;
+            margin-bottom: 40px;
+        }
+        
+        .members-section .card {
+            background: var(--card-background);
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background: var(--primary-color);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .card-header i {
+            color: white;
+        }
+        
+        .list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .list-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s ease;
+        }
+        
+        .list-item:hover {
+            background-color: var(--hover-color);
+        }
+        
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .member-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .member-name-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .member-name {
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 1.1rem;
+        }
+        
+        .member-email {
+            font-size: 0.95rem;
+            color: var(--secondary-text-color);
+            display: block;
+            margin-left: 2px;
+        }
+        
+        .member-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            height: 22px;
+        }
+        
+        .loading {
+            color: var(--secondary-text-color);
+            text-align: center;
+            padding: 20px;
+            font-size: 0.95rem;
+        }
+        
+        @media (max-width: 768px) {
+            .members-section {
+                padding: 0 10px;
+                margin-top: 20px;
+                margin-bottom: 30px;
+            }
+            
+            .card-header {
+                padding: 12px 15px;
+            }
+            
+            .list-item {
+                padding: 12px 15px;
+            }
+            
+            .member-name {
+                font-size: 1rem;
+            }
+            
+            .member-email {
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -133,22 +289,7 @@
         <main>
             <div class="welcome-section">
                 <h2>Welcome, <span id="user-name">User</span>!</h2>
-                <p>Manage your home chores and expenses</p>
-            </div>
-
-            <div class="dashboard-stats">
-                <div class="stat-card chores">
-                    <div class="stat-number" id="chores-count">-</div>
-                    <div class="stat-label">Active Chores</div>
-                </div>
-                <div class="stat-card expenses">
-                    <div class="stat-number" id="expenses-count">-</div>
-                    <div class="stat-label">Expenses</div>
-                </div>
-                <div class="stat-card payments">
-                    <div class="stat-number" id="members-count">-</div>
-                    <div class="stat-label">Members</div>
-                </div>
+                <p>What would you like to do today?</p>
             </div>
 
             <div class="dashboard-grid">
@@ -189,56 +330,22 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h3>Home Members</h3>
+            <div class="members-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-users"></i> Home Members</h3>
+                    </div>
+                    <ul id="members-list" class="list">
+                        <li class="list-item loading">Loading members...</li>
+                    </ul>
                 </div>
-                <ul id="members-list" class="list">
-                    <li class="list-item loading">Loading members...</li>
-                </ul>
             </div>
         </main>
-
-        <footer>
-            <p>&copy; 2025 Easy Chore. All rights reserved.</p>
-            <p class="motto" style="font-size: 0.9rem; margin-top: 5px;">Your home, your rules, your app.</p>
-        </footer>
     </div>
-    
-    <!-- Mobile optimizations -->
-    <script src="js/mobile-optimizations.js"></script>
-    <script src="js/mobile-nav.js"></script>
-    
-    <!-- App Scripts - Load after Firebase -->
-    <script src="js/dashboard.js"></script>
 
-    <script>
-        function navigateToChat() {
-            // Get current home data
-            const currentHomeId = localStorage.getItem('currentHomeId');
-            const homeName = document.getElementById('current-home-name').textContent || 'My Home';
-            
-            if (!currentHomeId) {
-                alert('No home selected. Please select a home first.');
-                window.location.href = 'select-home.html';
-                return;
-            }
-            
-            // Always set the selectedHome with the most current data
-            const homeData = {
-                homeId: currentHomeId,
-                name: homeName
-            };
-            console.log('Setting home data for chat:', homeData);
-            localStorage.setItem('selectedHome', JSON.stringify(homeData));
-            localStorage.setItem('currentHomeId', currentHomeId);
-            
-            // Navigate to chat page with homeId parameter for extra safety
-            window.location.href = `home-chat.html?homeId=${currentHomeId}`;
-        }
-    </script>
-    <!-- Mobile optimizations -->
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
     <script src="js/mobile-optimizations.js"></script>
-    <script src="js/mobile-nav.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>

@@ -635,7 +635,7 @@ function displayExpenses(expenses) {
             <div class="expense-header">
                 <h3>${expense.reason}</h3>
                 <div class="expense-actions">
-                    <button class="btn-icon view-btn" onclick="showExpenseDetails(${JSON.stringify(expense).replace(/"/g, '&quot;')})" title="View Details">
+                    <button class="btn-icon view-btn" onclick="handleExpenseClick('${expense._id}')" title="View Details">
                         <i class="fas fa-eye"></i>
                     </button>
                     ${canDeleteExpense(expense) ? `<button class="btn-icon delete-btn" onclick="deleteExpense('${expense._id}')" title="Delete Expense">
@@ -679,6 +679,18 @@ function displayExpenses(expenses) {
 
 // Handle clicking on expense card to view details
 function handleExpenseClick(expenseId) {
+    // Show loading state
+    const loadingModal = document.createElement('div');
+    loadingModal.className = 'modal';
+    loadingModal.id = 'loading-modal';
+    loadingModal.innerHTML = `
+        <div class="modal-content">
+            <p class="loading">Loading expense details...</p>
+        </div>
+    `;
+    document.body.appendChild(loadingModal);
+    loadingModal.style.display = 'block';
+    
     loadExpenseDetails(expenseId);
 }
 
@@ -697,18 +709,33 @@ function loadExpenseDetails(expenseId) {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Failed to load expense details');
+                return response.json().then(err => {
+                    throw new Error(err.message || 'Failed to load expense details');
+                });
             }
             return response.json();
         })
         .then(data => {
+            // Remove loading modal
+            const loadingModal = document.getElementById('loading-modal');
+            if (loadingModal) {
+                loadingModal.remove();
+            }
+            
             if (data.expense) {
                 showExpenseDetails(data.expense);
+            } else {
+                throw new Error('No expense data received');
             }
         })
         .catch(error => {
             console.error('Error loading expense details:', error);
-            showAlert('Failed to load expense details', 'error');
+            // Remove loading modal
+            const loadingModal = document.getElementById('loading-modal');
+            if (loadingModal) {
+                loadingModal.remove();
+            }
+            showAlert('Failed to load expense details: ' + error.message, 'error');
         });
 }
 
