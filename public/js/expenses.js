@@ -695,8 +695,11 @@ function displayExpenses(expenses) {
 
 // Handle clicking on expense card to view details
 function handleExpenseClick(expenseId) {
-    // Find the expense with this ID
-    const homeId = localStorage.getItem('currentHomeId');
+    loadExpenseDetails(expenseId);
+}
+
+function loadExpenseDetails(expenseId) {
+    console.log('Loading expense details for:', expenseId);
     
     firebase.auth().currentUser.getIdToken()
         .then(token => {
@@ -724,28 +727,6 @@ function handleExpenseClick(expenseId) {
             showAlert('Failed to load expense details', 'error');
         });
 }
-
-// Home data cache for storing home and members data
-const HomeDataCache = {
-    home: null,
-    members: null,
-    
-    getHome: function() {
-        return this.home;
-    },
-    
-    getMembers: function() {
-        return this.members;
-    },
-    
-    storeHome: function(homeData) {
-        this.home = homeData;
-    },
-    
-    storeMembers: function(membersData) {
-        this.members = membersData;
-    }
-};
 
 // Check if user can delete an expense
 function canDeleteExpense(expense) {
